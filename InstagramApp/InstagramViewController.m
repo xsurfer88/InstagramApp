@@ -10,6 +10,7 @@
 #import "YZInstagram.h"
 #import "AFHTTPRequestOperation.h"
 #import "InstagramUserMedia.h"
+#import "MediaCell.h"
 
 const NSInteger kthumbnailWidth = 80;
 const NSInteger kthumbnailHeight = 80;
@@ -22,25 +23,18 @@ const NSInteger kImagesPerRow = 4;
 @implementation InstagramViewController
 
 @synthesize webView;
-@synthesize gridScrollView;
 @synthesize accessToken;
-@synthesize thumbnails;
 @synthesize images;
-@synthesize pageTitle;
+@synthesize deck;
+
+#define LX_LIMITED_MOVEMENT 0
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
-    [super viewDidLoad];
-    
-    self.thumbnails = [[NSMutableArray alloc] init];
-    
     CGRect frame = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y+20, self.view.bounds.size.width, self.view.bounds.size.height);
-    self.gridScrollView = [[UIScrollView alloc] initWithFrame:frame];
-    self.gridScrollView.contentSize = self.view.bounds.size;
-    [self.view addSubview:self.gridScrollView];
     
     // create a webview
     self.webView = [[UIWebView alloc] initWithFrame:frame];
@@ -60,6 +54,8 @@ const NSInteger kImagesPerRow = 4;
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
     
+    deck = [[NSMutableArray alloc]init];
+
     if ([request.URL.absoluteString rangeOfString:@"#"].location != NSNotFound) {
         NSString* params = [[request.URL.absoluteString componentsSeparatedByString:@"#"] objectAtIndex:1];
         self.accessToken = [params stringByReplacingOccurrencesOfString:@"access_token=" withString:@""];
@@ -75,51 +71,28 @@ const NSInteger kImagesPerRow = 4;
 }
 
 #pragma mark - image loading
-
 - (void)requestImages
 {
     [InstagramUserMedia getUserMediaWithTag:@"selfie" withAccessToken:self.accessToken block:^(NSArray *records) {
         self.images = records;
-        int item = 0, row = 0, col = 0;
-        for (NSDictionary* image in records) {
-            UIButton* button = [[UIButton alloc] initWithFrame:CGRectMake(col*kthumbnailWidth,
-                                                                          row*kthumbnailHeight,
-                                                                          kthumbnailWidth,
-                                                                          kthumbnailHeight)];
-            button.tag = item;
-            [button addTarget:self action:@selector(tapAction:) forControlEvents:UIControlEventTouchUpInside];
-            [button addTarget:self action:@selector(imageMoved:withEvent:) forControlEvents:UIControlEventTouchDragInside];
-            ++col;++item;
-            if (col >= kImagesPerRow) {
-                row++;
-                col = 0;
-            }
-            [self.gridScrollView addSubview:button];
-            [self.thumbnails addObject:button];
+    
+        int i = 0;
+        for (InstagramUserMedia* image in records) {
+            Media *media = [[Media alloc] init];
+            NSString* thumbnailUrl = image.thumbnailUrl;
+           
+            NSData* data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:thumbnailUrl]];
+            UIImage* image = [UIImage imageWithData:data];
+            media.image = image;
+            media.tag = [NSNumber numberWithInt:i];
+            [deck addObject:media];
+            i++;
         }
-        [self loadImages];
+    
+        [self.collectionView reloadData];
     }];
 }
 
-- (void)loadImages
-{
-    int item = 0;
-    
-    for (InstagramUserMedia* media in self.images) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^ {
-            NSString* thumbnailUrl = media.thumbnailUrl;
-            NSData* data = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:thumbnailUrl]];
-            UIImage* image = [UIImage imageWithData:data];
-            
-            dispatch_async(dispatch_get_main_queue(), ^ {
-                UIButton* button = [self.thumbnails objectAtIndex:item];
-                [button setImage:image forState:UIControlStateNormal];
-            });
-        });
-        ++item;
-    }
-    
-}
 
 -(void)tapAction:(id)sender{
     UIButton *button = (UIButton *)sender;
@@ -141,18 +114,62 @@ const NSInteger kImagesPerRow = 4;
 
 }
 
-- (IBAction) imageMoved:(id) sender withEvent:(UIEvent *) event
-{
-    UIControl *control = sender;
+#pragma mark - UICollectionViewDataSource methods
+
+- (NSInteger)collectionView:(UICollectionView *)theCollectionView numberOfItemsInSection:(NSInteger)theSectionIndex {
+    return self.deck.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    Media *media = self.deck[indexPath.item];
+    MediaCell *mediaCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MediaCell" forIndexPath:indexPath];
+    mediaCell.media = media;
     
-    UITouch *t = [[event allTouches] anyObject];
-    CGPoint pPrev = [t previousLocationInView:control];
-    CGPoint p = [t locationInView:control];
+    return mediaCell;
+}
+
+#pragma mark - LXReorderableCollectionViewDataSource methods
+
+- (void)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath willMoveToIndexPath:(NSIndexPath *)toIndexPath {
+    Media *media = self.deck[fromIndexPath.item];
     
-    CGPoint center = control.center;
-    center.x += p.x - pPrev.x;
-    center.y += p.y - pPrev.y;
-    control.center = center;
+    [self.deck removeObjectAtIndex:fromIndexPath.item];
+    [self.deck insertObject:media atIndex:toIndexPath.item];
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView canMoveItemAtIndexPath:(NSIndexPath *)indexPath {
+#if LX_LIMITED_MOVEMENT == 1
+    Media *media = self.deck[indexPath.item];
+#else
+    return YES;
+#endif
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView itemAtIndexPath:(NSIndexPath *)fromIndexPath canMoveToIndexPath:(NSIndexPath *)toIndexPath {
+#if LX_LIMITED_MOVEMENT == 1
+    Media *fromMedia = self.deck[fromIndexPath.item];
+    Media *toMedia = self.deck[toIndexPath.item];
+#else
+    return YES;
+#endif
+}
+
+#pragma mark - LXReorderableCollectionViewDelegateFlowLayout methods
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout willBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"will begin drag");
+}
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didBeginDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"did begin drag");
+}
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout willEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"will end drag");
+}
+
+- (void)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout didEndDraggingItemAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"did end drag");
 }
 
 @end

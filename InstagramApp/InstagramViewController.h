@@ -7,16 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LXReorderableCollectionViewFlowLayout.h"
 
-@interface InstagramViewController : UIViewController<UIWebViewDelegate>
+@interface InstagramViewController : UICollectionViewController<UIWebViewDelegate, LXReorderableCollectionViewDataSource, LXReorderableCollectionViewDelegateFlowLayout>
 
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
-
-@property (nonatomic, strong) UIScrollView* gridScrollView;
 @property (nonatomic, strong) NSArray* images;
-@property (nonatomic, strong) NSMutableArray* thumbnails;
-@property (strong, nonatomic) IBOutlet UILabel *pageTitle;
-
 @property (nonatomic, strong) NSString* accessToken;
+
+@property (strong, nonatomic) NSMutableArray *deck;
 
 @end

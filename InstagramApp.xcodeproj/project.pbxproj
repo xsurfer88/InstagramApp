@@ -32,6 +32,10 @@
 		EE427AA819D3C7E200115DBA /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = EE427A9D19D3C7E200115DBA /* AFURLConnectionOperation.m */; };
 		EE427AA919D3C7E200115DBA /* AFXMLRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = EE427A9F19D3C7E200115DBA /* AFXMLRequestOperation.m */; };
 		EE427AAA19D3C7E200115DBA /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = EE427AA119D3C7E200115DBA /* UIImageView+AFNetworking.m */; };
+		EE427AAE19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = EE427AAD19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.m */; };
+		EE427AB119D4FC2100115DBA /* MediaCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EE427AB019D4FC2100115DBA /* MediaCell.m */; };
+		EE427B2619D50E2D00115DBA /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = EE427B2519D50E2D00115DBA /* Media.m */; };
+		EE427B9A19D51DF400115DBA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE427B9919D51DF400115DBA /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +91,13 @@
 		EE427A9F19D3C7E200115DBA /* AFXMLRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFXMLRequestOperation.m; sourceTree = "<group>"; };
 		EE427AA019D3C7E200115DBA /* UIImageView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+AFNetworking.h"; sourceTree = "<group>"; };
 		EE427AA119D3C7E200115DBA /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
+		EE427AAC19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LXReorderableCollectionViewFlowLayout.h; sourceTree = "<group>"; };
+		EE427AAD19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LXReorderableCollectionViewFlowLayout.m; sourceTree = "<group>"; };
+		EE427AAF19D4FC2100115DBA /* MediaCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaCell.h; sourceTree = "<group>"; };
+		EE427AB019D4FC2100115DBA /* MediaCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaCell.m; sourceTree = "<group>"; };
+		EE427B2419D50E2D00115DBA /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Media.h; sourceTree = "<group>"; };
+		EE427B2519D50E2D00115DBA /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Media.m; sourceTree = "<group>"; };
+		EE427B9919D51DF400115DBA /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE427B9A19D51DF400115DBA /* QuartzCore.framework in Frameworks */,
 				EE427A3419D3942700115DBA /* CoreGraphics.framework in Frameworks */,
 				EE427A3619D3942700115DBA /* UIKit.framework in Frameworks */,
 				EE427A3219D3942700115DBA /* Foundation.framework in Frameworks */,
@@ -135,6 +147,7 @@
 		EE427A3019D3942700115DBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EE427B9919D51DF400115DBA /* QuartzCore.framework */,
 				EE427A3119D3942700115DBA /* Foundation.framework */,
 				EE427A3319D3942700115DBA /* CoreGraphics.framework */,
 				EE427A3519D3942700115DBA /* UIKit.framework */,
@@ -146,6 +159,7 @@
 		EE427A3719D3942700115DBA /* InstagramApp */ = {
 			isa = PBXGroup;
 			children = (
+				EE427AAB19D4FAAC00115DBA /* Library */,
 				EE427A8E19D3C7E200115DBA /* AFNetworking */,
 				EE427A8A19D3C22300115DBA /* InstagramUserMedia.h */,
 				EE427A8B19D3C22300115DBA /* InstagramUserMedia.m */,
@@ -156,6 +170,10 @@
 				EE427A4319D3942700115DBA /* Main.storyboard */,
 				EE427A4619D3942700115DBA /* InstagramViewController.h */,
 				EE427A4719D3942700115DBA /* InstagramViewController.m */,
+				EE427AAF19D4FC2100115DBA /* MediaCell.h */,
+				EE427AB019D4FC2100115DBA /* MediaCell.m */,
+				EE427B2419D50E2D00115DBA /* Media.h */,
+				EE427B2519D50E2D00115DBA /* Media.m */,
 				EE427A4919D3942700115DBA /* Images.xcassets */,
 				EE427A3819D3942700115DBA /* Supporting Files */,
 			);
@@ -215,6 +233,16 @@
 				EE427AA119D3C7E200115DBA /* UIImageView+AFNetworking.m */,
 			);
 			path = AFNetworking;
+			sourceTree = "<group>";
+		};
+		EE427AAB19D4FAAC00115DBA /* Library */ = {
+			isa = PBXGroup;
+			children = (
+				EE427AAC19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.h */,
+				EE427AAD19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.m */,
+			);
+			name = Library;
+			path = LXReorderableCollectionViewFlowLayout;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,15 +342,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE427AAE19D4FAAC00115DBA /* LXReorderableCollectionViewFlowLayout.m in Sources */,
 				EE427AA419D3C7E200115DBA /* AFImageRequestOperation.m in Sources */,
 				EE427A4819D3942700115DBA /* InstagramViewController.m in Sources */,
 				EE427A6819D3BFDE00115DBA /* YZInstagram.m in Sources */,
+				EE427B2619D50E2D00115DBA /* Media.m in Sources */,
 				EE427AA919D3C7E200115DBA /* AFXMLRequestOperation.m in Sources */,
 				EE427A4219D3942700115DBA /* AppDelegate.m in Sources */,
 				EE427AAA19D3C7E200115DBA /* UIImageView+AFNetworking.m in Sources */,
 				EE427AA819D3C7E200115DBA /* AFURLConnectionOperation.m in Sources */,
 				EE427AA619D3C7E200115DBA /* AFNetworkActivityIndicatorManager.m in Sources */,
 				EE427A3E19D3942700115DBA /* main.m in Sources */,
+				EE427AB119D4FC2100115DBA /* MediaCell.m in Sources */,
 				EE427AA519D3C7E200115DBA /* AFJSONRequestOperation.m in Sources */,
 				EE427A8C19D3C22300115DBA /* InstagramUserMedia.m in Sources */,
 				EE427AA719D3C7E200115DBA /* AFPropertyListRequestOperation.m in Sources */,
