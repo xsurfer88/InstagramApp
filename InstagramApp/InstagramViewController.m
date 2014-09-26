@@ -93,27 +93,6 @@ const NSInteger kImagesPerRow = 4;
     }];
 }
 
-
--(void)tapAction:(id)sender{
-    UIButton *button = (UIButton *)sender;
-    
-    //bring to front doesn't work
-    [self.view bringSubviewToFront:button];
-    
-    button.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        // animate it to 200% scale
-        button.transform = CGAffineTransformMakeScale(2.0, 2.0);
-    } completion:^(BOOL finished){
-        [UIView animateWithDuration:1.0 delay:0.5 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            // animate it back to position
-            button.transform = CGAffineTransformMakeScale(1.0, 1.0);
-            } completion:^(BOOL finished){
-            }];
-    }];
-
-}
-
 #pragma mark - UICollectionViewDataSource methods
 
 - (NSInteger)collectionView:(UICollectionView *)theCollectionView numberOfItemsInSection:(NSInteger)theSectionIndex {

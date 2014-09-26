@@ -428,20 +428,65 @@ static NSString * const kLXCollectionViewKeyPath = @"collectionView";
     }
 }
 
-- (void)handleTapGesture:(UIGestureRecognizer *)sender {
-    UIImageView *image = (UIImageView *)sender.view;
+- (void)handleTapGesture:(UITapGestureRecognizer *)gestureRecognizer {
+    NSIndexPath *currentIndexPath = [self.collectionView indexPathForItemAtPoint:[gestureRecognizer locationInView:self.collectionView]];
     
-    image.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    [UIView animateWithDuration:1.0 delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        // animate it to 200% scale
-        image.transform = CGAffineTransformMakeScale(2.0, 2.0);
-    } completion:^(BOOL finished){
-        [UIView animateWithDuration:1.0 delay:0.5 options:UIViewAnimationOptionCurveEaseIn animations:^{
-            // animate it back to position
-            image.transform = CGAffineTransformMakeScale(1.0, 1.0);
-        } completion:^(BOOL finished){
-        }];
-    }];
+    UICollectionViewCell *collectionViewCell = [self.collectionView cellForItemAtIndexPath:currentIndexPath];
+    
+    self.currentView = [[UIView alloc] initWithFrame:collectionViewCell.frame];
+    
+    collectionViewCell.highlighted = YES;
+    UIView *highlightedImageView = [collectionViewCell LX_snapshotView];
+    highlightedImageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    highlightedImageView.alpha = 1.0f;
+    
+    collectionViewCell.highlighted = NO;
+    UIView *imageView = [collectionViewCell LX_snapshotView];
+    imageView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    imageView.alpha = 0.0f;
+    
+    [self.currentView addSubview:imageView];
+    [self.currentView addSubview:highlightedImageView];
+    [self.collectionView addSubview:self.currentView];
+    
+    self.currentViewCenter = self.currentView.center;
+    
+    __weak typeof(self) weakSelf = self;
+    [UIView
+     animateWithDuration:0.3
+     delay:0.0
+     options:UIViewAnimationOptionBeginFromCurrentState
+     animations:^{
+         __strong typeof(self) strongSelf = weakSelf;
+         if (strongSelf) {
+             strongSelf.currentView.transform = CGAffineTransformMakeScale(2.0f, 2.0f);
+             highlightedImageView.alpha = 0.0f;
+             imageView.alpha = 1.0f;
+         }
+     }
+     completion:^(BOOL finished) {
+         [UIView
+          animateWithDuration:1.0
+          delay:0.5
+          options:UIViewAnimationOptionBeginFromCurrentState
+          animations:^{
+              __strong typeof(self) strongSelf = weakSelf;
+              if (strongSelf) {
+                  strongSelf.currentView.transform = CGAffineTransformMakeScale(1.0f, 1.0f);
+                  highlightedImageView.alpha = 0.0f;
+                  imageView.alpha = 1.0f;
+              }
+          }
+          completion:^(BOOL finished) {
+         __strong typeof(self) strongSelf = weakSelf;
+         
+         if (strongSelf) {
+             [imageView removeFromSuperview];
+             [highlightedImageView removeFromSuperview];
+         }}];
+     }];
+    
+    [self invalidateLayout];
 }
 
 #pragma mark - UICollectionViewLayout overridden methods
